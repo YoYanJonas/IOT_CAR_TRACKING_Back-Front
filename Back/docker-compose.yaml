@@ -1,0 +1,38 @@
+version: '3.9'
+
+
+services:
+  backend:
+    build: .
+    ports:
+    - "8000:8000"
+    volumes:
+      - .:/app
+    links:
+      - "db"
+    depends_on:
+      - db
+    networks:
+      - try_a_new
+  
+  db:
+    image: mysql:8
+    restart: unless-stopped
+    cap_add:
+      - SYS_NICE
+    environment:
+      MYSQL_DATABASE: iot_tracking
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - dbdata:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - try_a_new
+
+
+volumes:
+  dbdata:
+networks:
+  try_a_new:
+    driver: bridge
